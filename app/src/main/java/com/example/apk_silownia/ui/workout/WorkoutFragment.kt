@@ -4,39 +4,67 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.apk_silownia.databinding.FragmentWorkoutBinding
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.apk_silownia.R
+import com.example.apk_silownia.ui.workout.WorkoutViewModel
+import com.example.apk_silownia.model.Exercise
+import com.example.apk_silownia.adapter.ExerciseAdapter
 
-class WorkoutFragment : Fragment() {
+class WorkoutFragment : Fragment(R.layout.fragment_workout) {
 
-    private var _binding: FragmentWorkoutBinding? = null
+    private lateinit var workoutViewModel: WorkoutViewModel
+    private lateinit var exerciseAdapter: ExerciseAdapter
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var exerciseNameEditText: EditText
+    private lateinit var addExerciseButton: Button
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        val workoutViewModel =
-            ViewModelProvider(this).get(WorkoutViewModel::class.java)
+    ): View? {
+        val rootView = inflater.inflate(R.layout.fragment_workout, container, false)
 
-        _binding = FragmentWorkoutBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        // Inicjalizacja widoków
+        recyclerView = rootView.findViewById(R.id.recyclerView)
+        exerciseNameEditText = rootView.findViewById(R.id.exerciseNameEditText)
+        addExerciseButton = rootView.findViewById(R.id.addExerciseButton)
 
-        val textView: TextView = binding.textDashboard
-        workoutViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        // Inicjalizacja ViewModel
+        workoutViewModel = ViewModelProvider(this).get(WorkoutViewModel::class.java)
+
+        // Obserwowanie listy ćwiczeń
+        workoutViewModel.exercises.observe(viewLifecycleOwner, { exercises ->
+            exerciseAdapter = ExerciseAdapter(exercises)
+            recyclerView.adapter = exerciseAdapter
+        })
+
+        // Obserwowanie statusu
+        workoutViewModel.status.observe(viewLifecycleOwner, { status ->
+            Toast.makeText(requireContext(), status, Toast.LENGTH_SHORT).show()
+        })
+
+        // Pobieranie ćwiczeń po załadowaniu fragmentu
+        workoutViewModel.fetchExercises()
+
+        // Dodawanie nowego ćwiczenia
+        addExerciseButton.setOnClickListener {
+            val name = exerciseNameEditText.text.toString()
+            if (name.isNotEmpty()) {
+                workoutViewModel.createExercise(name, time = false, reps = true, weight = false)
+            } else {
+                Toast.makeText(requireContext(), "Proszę wprowadzić nazwę ćwiczenia", Toast.LENGTH_SHORT).show()
+            }
         }
-        return root
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        return rootView
     }
 }
