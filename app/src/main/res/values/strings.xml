@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">apk_silownia</string>
+    <string name="title_home">Home</string>
+    <string name="title_workout">Trening</string>
+    <string name="title_stats">Statystyki</string>
+    <string name="title_profile">Profil</string>
+</resources>
