@@ -4,11 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.apk_silownia.R
 import com.example.apk_silownia.RetrofitClient
 import com.example.apk_silownia.model.CreateExerciseRequest
 import com.example.apk_silownia.model.Exercise
-import androidx.recyclerview.widget.RecyclerView
 import com.example.apk_silownia.model.ExerciseResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -21,6 +19,13 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
 
     private val _status = MutableLiveData<String>()
     val status: LiveData<String> get() = _status
+
+    private val _editingExerciseId = MutableLiveData<Int?>()
+    val editingExerciseId: LiveData<Int?> get() = _editingExerciseId
+
+    fun setEditingExerciseId(exerciseId: Int) {
+        _editingExerciseId.value = exerciseId
+    }
 
     fun fetchExercises() {
         RetrofitClient.apiService.getExercises().enqueue(object : Callback<ExerciseResponse> {
@@ -63,7 +68,7 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
             override fun onResponse(call: Call<ExerciseResponse>, response: Response<ExerciseResponse>) {
                 if (response.isSuccessful) {
                     _status.value = "Ćwiczenie usunięte"
-                    fetchExercises()  // Odśwież listę po usunięciu ćwiczenia
+                    fetchExercises()
                 } else {
                     _status.value = "Błąd usuwania ćwiczenia"
                 }
@@ -74,4 +79,25 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
             }
         })
     }
+
+    // Funkcja edytowania cwiczenia
+    fun updateExerciseName(exerciseId: Int, newName: String) {
+        val updatedExercise = CreateExerciseRequest(name = newName, time = false, reps = true, weight = false)
+
+        RetrofitClient.apiService.updateExerciseName(exerciseId, updatedExercise).enqueue(object : Callback<ExerciseResponse> {
+            override fun onResponse(call: Call<ExerciseResponse>, response: Response<ExerciseResponse>) {
+                if (response.isSuccessful) {
+                    _status.value = "Nazwa ćwiczenia zaktualizowana"
+                    fetchExercises()
+                } else {
+                    _status.value = "Błąd aktualizacji nazwy ćwiczenia"
+                }
+            }
+
+            override fun onFailure(call: Call<ExerciseResponse>, t: Throwable) {
+                _status.value = "Błąd połączenia"
+            }
+        })
+    }
+
 }

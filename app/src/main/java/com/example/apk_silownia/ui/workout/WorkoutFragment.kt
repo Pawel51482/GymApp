@@ -37,7 +37,7 @@ class WorkoutFragment : Fragment(R.layout.fragment_workout) {
         workoutViewModel = ViewModelProvider(this).get(WorkoutViewModel::class.java)
 
         workoutViewModel.exercises.observe(viewLifecycleOwner, { exercises ->
-            exerciseAdapter = ExerciseAdapter(exercises, ::onDeleteExercise)
+            exerciseAdapter = ExerciseAdapter(exercises, ::onDeleteExercise, ::onEditExercise, ::onSaveExercise)
             recyclerView.adapter = exerciseAdapter
         })
 
@@ -61,5 +61,13 @@ class WorkoutFragment : Fragment(R.layout.fragment_workout) {
 
     private fun onDeleteExercise(exerciseId: Int) {
         workoutViewModel.deleteExercise(exerciseId)
+    }
+
+    private fun onEditExercise(exerciseId: Int) {
+        workoutViewModel.setEditingExerciseId(exerciseId)
+    }
+
+    private fun onSaveExercise(exerciseId: Int, newName: String) {
+        workoutViewModel.updateExerciseName(exerciseId, newName)
     }
 }

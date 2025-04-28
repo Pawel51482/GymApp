@@ -11,6 +11,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ApiService {
@@ -29,4 +30,8 @@ interface ApiService {
 
     @DELETE("/delete-exercise/{id}/")
     fun deleteExercise(@Path("id") exerciseId: Int): Call<ExerciseResponse>
+
+    @PUT("/update-exercise/{id}/")
+    fun updateExerciseName(@Path("id") exerciseId: Int, @Body updatedExercise: CreateExerciseRequest
+    ): Call<ExerciseResponse>
 }

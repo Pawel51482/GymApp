@@ -10,17 +10,21 @@
         android:id="@+id/usernameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Username"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/primaryGray"
+        android:hint="Nick"
         android:inputType="text"
-        android:padding="16dp"
+        android:minHeight="48dp"
         android:textColor="@color/white"
-        android:layout_marginBottom="16dp" />
+        android:textColorHint="@color/Gray2" />
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
         android:textColor="@color/white"
+        android:backgroundTint="@color/primaryGray"
+        android:textColorHint="@color/Gray2"
         android:inputType="textEmailAddress"
         android:minHeight="48dp" />
 
@@ -30,6 +34,8 @@
         android:layout_height="wrap_content"
         android:hint="Hasło"
         android:textColor="@color/white"
+        android:backgroundTint="@color/primaryGray"
+        android:textColorHint="@color/Gray2"
         android:inputType="textPassword"
         android:minHeight="48dp" />
 

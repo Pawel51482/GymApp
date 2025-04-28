@@ -9,7 +9,9 @@ import com.example.apk_silownia.model.Exercise
 
 class ExerciseAdapter(
     private val exercises: List<Exercise>,
-    private val onDeleteExercise: (Int) -> Unit // Funkcja przekazana do adaptera
+    private val onDeleteExercise: (Int) -> Unit,
+    private val onEditExercise: (Int) -> Unit,
+    private val onSaveExercise: (Int, String) -> Unit
 ) : RecyclerView.Adapter<ExerciseViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
@@ -19,12 +21,7 @@ class ExerciseAdapter(
 
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         val exercise = exercises[position]
-        holder.bind(exercise)
-
-        // Usuwanie
-        holder.itemView.findViewById<Button>(R.id.deleteExerciseButton).setOnClickListener {
-            onDeleteExercise(exercise.id)
-        }
+        holder.bind(exercise, onDeleteExercise, onSaveExercise, onEditExercise)
     }
 
     override fun getItemCount() = exercises.size
