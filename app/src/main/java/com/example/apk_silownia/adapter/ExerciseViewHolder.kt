@@ -1,22 +1,21 @@
 package com.example.apk_silownia.adapter
 
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.apk_silownia.R
 import com.example.apk_silownia.model.Exercise
 
-class ExerciseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class ExerciseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val exerciseNameTextView: TextView = itemView.findViewById(R.id.exerciseName)
+    private val deleteButton: Button = itemView.findViewById(R.id.deleteExerciseButton)
 
-    // Upewnij się, że masz odpowiednie ID w pliku layoutu
-    private val exerciseName: TextView = view.findViewById(R.id.exerciseName)
-    private val exerciseCategory: TextView = view.findViewById(R.id.exerciseCategory)
-
+    // Funkcja do bindowania danych ćwiczenia do widoku
     fun bind(exercise: Exercise) {
-        exerciseName.text = exercise.name  // Bindowanie danych
-        exerciseCategory.text = exercise.category
+        exerciseNameTextView.text = exercise.name
 
-        exerciseName.setTextColor(android.graphics.Color.WHITE)
-        exerciseCategory.setTextColor(android.graphics.Color.WHITE)
+        deleteButton.setOnClickListener {
+        }
     }
 }

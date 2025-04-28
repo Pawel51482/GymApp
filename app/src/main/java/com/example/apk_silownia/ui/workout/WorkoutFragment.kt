@@ -12,15 +12,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.apk_silownia.R
-import com.example.apk_silownia.ui.workout.WorkoutViewModel
-import com.example.apk_silownia.model.Exercise
 import com.example.apk_silownia.adapter.ExerciseAdapter
 
 class WorkoutFragment : Fragment(R.layout.fragment_workout) {
 
     private lateinit var workoutViewModel: WorkoutViewModel
     private lateinit var exerciseAdapter: ExerciseAdapter
-
     private lateinit var exerciseNameEditText: EditText
     private lateinit var addExerciseButton: Button
     private lateinit var recyclerView: RecyclerView
@@ -31,31 +28,25 @@ class WorkoutFragment : Fragment(R.layout.fragment_workout) {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_workout, container, false)
 
-        // Inicjalizacja widoków
         recyclerView = rootView.findViewById(R.id.recyclerView)
         exerciseNameEditText = rootView.findViewById(R.id.exerciseNameEditText)
         addExerciseButton = rootView.findViewById(R.id.addExerciseButton)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // Inicjalizacja ViewModel
         workoutViewModel = ViewModelProvider(this).get(WorkoutViewModel::class.java)
 
-        // Obserwowanie listy ćwiczeń
         workoutViewModel.exercises.observe(viewLifecycleOwner, { exercises ->
-            exerciseAdapter = ExerciseAdapter(exercises)
+            exerciseAdapter = ExerciseAdapter(exercises, ::onDeleteExercise)
             recyclerView.adapter = exerciseAdapter
         })
 
-        // Obserwowanie statusu
         workoutViewModel.status.observe(viewLifecycleOwner, { status ->
             Toast.makeText(requireContext(), status, Toast.LENGTH_SHORT).show()
         })
 
-        // Pobieranie ćwiczeń po załadowaniu fragmentu
         workoutViewModel.fetchExercises()
 
-        // Dodawanie nowego ćwiczenia
         addExerciseButton.setOnClickListener {
             val name = exerciseNameEditText.text.toString()
             if (name.isNotEmpty()) {
@@ -66,5 +57,9 @@ class WorkoutFragment : Fragment(R.layout.fragment_workout) {
         }
 
         return rootView
+    }
+
+    private fun onDeleteExercise(exerciseId: Int) {
+        workoutViewModel.deleteExercise(exerciseId)
     }
 }

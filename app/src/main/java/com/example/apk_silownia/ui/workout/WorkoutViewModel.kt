@@ -16,15 +16,12 @@ import retrofit2.Response
 
 class WorkoutViewModel(application: Application) : AndroidViewModel(application) {
 
-    // LiveData do przechowywania listy ćwiczeń
     private val _exercises = MutableLiveData<List<Exercise>>()
     val exercises: LiveData<List<Exercise>> get() = _exercises
 
-    // LiveData do przechowywania statusu operacji (np. tworzenie ćwiczenia)
     private val _status = MutableLiveData<String>()
     val status: LiveData<String> get() = _status
 
-    // Pobieranie listy ćwiczeń
     fun fetchExercises() {
         RetrofitClient.apiService.getExercises().enqueue(object : Callback<ExerciseResponse> {
             override fun onResponse(call: Call<ExerciseResponse>, response: Response<ExerciseResponse>) {
@@ -41,7 +38,6 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
         })
     }
 
-    // Tworzenie nowego ćwiczenia
     fun createExercise(name: String, time: Boolean, reps: Boolean, weight: Boolean) {
         val newExercise = CreateExerciseRequest(name, time, reps, weight)
 
@@ -49,9 +45,27 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
             override fun onResponse(call: Call<ExerciseResponse>, response: Response<ExerciseResponse>) {
                 if (response.isSuccessful) {
                     _status.value = "Ćwiczenie dodane"
-                    fetchExercises()  // Odśwież listę po dodaniu nowego ćwiczenia
+                    fetchExercises()
                 } else {
                     _status.value = "Błąd dodawania ćwiczenia"
+                }
+            }
+
+            override fun onFailure(call: Call<ExerciseResponse>, t: Throwable) {
+                _status.value = "Błąd połączenia"
+            }
+        })
+    }
+
+    // Funkcja do usuwania ćwiczenia
+    fun deleteExercise(exerciseId: Int) {
+        RetrofitClient.apiService.deleteExercise(exerciseId).enqueue(object : Callback<ExerciseResponse> {
+            override fun onResponse(call: Call<ExerciseResponse>, response: Response<ExerciseResponse>) {
+                if (response.isSuccessful) {
+                    _status.value = "Ćwiczenie usunięte"
+                    fetchExercises()  // Odśwież listę po usunięciu ćwiczenia
+                } else {
+                    _status.value = "Błąd usuwania ćwiczenia"
                 }
             }
 

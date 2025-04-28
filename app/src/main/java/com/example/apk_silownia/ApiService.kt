@@ -8,8 +8,10 @@ import com.example.apk_silownia.model.RegisterRequest
 import com.example.apk_silownia.model.RegisterResponse
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ApiService {
 
@@ -24,4 +26,7 @@ interface ApiService {
 
     @POST("/create-exercise/")
     fun createExercise(@Body request: CreateExerciseRequest): Call<ExerciseResponse>
+
+    @DELETE("/delete-exercise/{id}/")
+    fun deleteExercise(@Path("id") exerciseId: Int): Call<ExerciseResponse>
 }
